@@ -8,7 +8,8 @@ import EditModal from './components/EditModal';
 class App extends Component {
   state = {
     warehouses: [] as Warehouse[],
-    showEdit: false
+    showEdit: false,
+    selectedEdit: null
   }
   componentWillMount() {
     axios.get('http://localhost:3001/warehouses').then( data => this.mapWarehouses(data.data));
@@ -18,7 +19,8 @@ class App extends Component {
     this.setState({warehouses: data});
   }
   handleShowModal(id: string) {
-    this.setState({showEdit: true});
+    const selected = this.state.warehouses.find((entry) => entry.warehouseId === id);
+    this.setState({selectedEdit: selected, showEdit: true});
   }
   editClose() {
     this.setState({showEdit: false});
@@ -60,7 +62,7 @@ class App extends Component {
                 )}
             </tbody>
           </Table>
-          <EditModal showEdit={this.state.showEdit} editClose={() => {this.editClose()}}/>
+          <EditModal selectedEdit={this.state.selectedEdit} showEdit={this.state.showEdit} editClose={() => {this.editClose()}}/>
         </div>
       );
    }
