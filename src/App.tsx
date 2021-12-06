@@ -4,31 +4,44 @@ import { Warehouse } from './model/Warehouse';
 
 import axios from 'axios';
 import EditModal from './components/EditModal';
+import DeleteModal from './components/DeleteModal';
 
 class App extends Component {
   state = {
     warehouses: [] as Warehouse[],
     showEdit: false,
-    selectedEdit: null
+    showDelete: false,
+    selectedEdit: null,
+    selectedDelete: null
   }
   componentWillMount() {
     axios.get('http://localhost:3001/warehouses').then( data => this.mapWarehouses(data.data));
   }
 
   mapWarehouses(data: Warehouse[]) {
+    console.log(data);
     this.setState({warehouses: data});
   }
-  handleShowModal(id: string) {
-    const selected = this.state.warehouses.find((entry) => entry.warehouseId === id);
-    this.setState({selectedEdit: selected, showEdit: true});
+  handleShowModal(id: string, action: string) {
+    const selected = this.state.warehouses.find((entry) => entry.id === id);
+    if (action === 'update') {
+      this.setState({selectedEdit: selected, showEdit: true});
+    } else if (action === 'delete') {
+      this.setState({selectedDelete: selected, showDelete: true});
+    }
   }
-  editClose() {
-    this.setState({showEdit: false});
+
+  modalClose() {
+    this.setState({showEdit: false, showDelete: false});
+    axios.get('http://localhost:3001/warehouses').then( data => this.mapWarehouses(data.data));
   }
 
   render() {
       return (
         <div className="App container">
+          <hr/>
+          <h1>Warehouses</h1>
+          <hr/>
           <Table>
             <thead>
               <tr>
@@ -42,7 +55,7 @@ class App extends Component {
             <tbody>
               {this.state.warehouses && this.state.warehouses.map(entry => {
                   return (
-                  <tr key={entry.warehouseId}>
+                  <tr key={entry.id}>
                     <td>{entry.warehouseName}</td>
                     <td>{entry.warehouseDescription}</td>
                     <td>
@@ -53,8 +66,8 @@ class App extends Component {
                       <div>{entry.warehouseAddress.country}</div>
                     </td>
                     <td>
-                      <Button color="success" size="sm" className="mr-2" onClick={() => {this.handleShowModal(entry.warehouseId)}}>Edit</Button>
-                      <Button color="danger" size="sm">Delete</Button>
+                      <Button color="success" size="sm" className="mr-2 action-button"  onClick={() => {this.handleShowModal(entry.id, 'update')}}>Edit</Button>
+                      <Button color="danger" size="sm" className="mr-2 action-button" onClick={() => {this.handleShowModal(entry.id, 'delete')}}>Delete</Button>
                     </td>
                   </tr>
                   )
@@ -62,7 +75,8 @@ class App extends Component {
                 )}
             </tbody>
           </Table>
-          <EditModal selectedEdit={this.state.selectedEdit} showEdit={this.state.showEdit} editClose={() => {this.editClose()}}/>
+          <EditModal selectedEdit={this.state.selectedEdit} showEdit={this.state.showEdit} modalClose={() => {this.modalClose()}}/>
+          <DeleteModal selectedDelete={this.state.selectedDelete} showDelete={this.state.showDelete} modalClose={() => {this.modalClose()}}/>
         </div>
       );
    }

@@ -1,5 +1,5 @@
 export type Warehouse = {
-    warehouseId: string,
+    id: string,
     warehouseName: string,
     warehouseDescription: string,
     warehouseAddress: Address
