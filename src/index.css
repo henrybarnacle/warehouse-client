@@ -14,3 +14,6 @@ code {
 .action-button {
   margin: 2px;
 }
+.update-buttons {
+  float: right;
+}

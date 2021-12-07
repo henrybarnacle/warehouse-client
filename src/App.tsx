@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'reactstrap';
-import { Warehouse } from './model/Warehouse';
 
-import axios from 'axios';
+import { Warehouse } from './model/Warehouse';
 import EditModal from './components/EditModal';
 import DeleteModal from './components/DeleteModal';
+import { listService } from './service/updateService';
 
 class App extends Component {
   state = {
@@ -15,11 +15,10 @@ class App extends Component {
     selectedDelete: null
   }
   componentWillMount() {
-    axios.get('http://localhost:3001/warehouses').then( data => this.mapWarehouses(data.data));
+    listService.get('/warehouses').then( data => this.mapWarehouses(data.data));
   }
 
   mapWarehouses(data: Warehouse[]) {
-    console.log(data);
     this.setState({warehouses: data});
   }
   handleShowModal(id: string, action: string) {
@@ -33,7 +32,7 @@ class App extends Component {
 
   modalClose() {
     this.setState({showEdit: false, showDelete: false});
-    axios.get('http://localhost:3001/warehouses').then( data => this.mapWarehouses(data.data));
+    listService.get('/warehouses').then( data => this.mapWarehouses(data.data));
   }
 
   render() {

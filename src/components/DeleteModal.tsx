@@ -11,7 +11,8 @@ const DeleteModal = (props) => {
         .then(res => setTimeout(() => {
             props.modalClose()
            }, 1000)
-           );
+        )
+        .catch( err => alert(err))
     }
     return (
         <Modal show={props.showDelete} onHide={() => {props.modalClose()}}>
@@ -19,7 +20,7 @@ const DeleteModal = (props) => {
             <Modal.Title>Delete Warehouse</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <h2>Are you sure you want to delete {props?.selectedDelete?.warehouseName}?</h2>
+            <h4>Are you sure you want to delete {props?.selectedDelete?.warehouseName}?</h4>
             </Modal.Body>
                 <Modal.Footer>
                 <Button variant="secondary" onClick={() => {props.modalClose()}}>
